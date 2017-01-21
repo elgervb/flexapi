@@ -1,0 +1,33 @@
+{
+  "name": "gulp-php",
+  "version": "1.0.0",
+  "description": "Gulp for PHP",
+  "main": "",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "./vendor/phpunit/phpunit/phpunit -c ./phpunit.xml",
+    "test:coverage": "$npm_package_scripts_test --coverage-text",
+    "watch": "npm test && gulp test:watch",
+    "start": "php -S localhost:4000 -t src/ -c php.ini src/router.php",
+    "postinstall": "composer install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/elgervb/gulp-php.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/elgervb/gulp-php/issues"
+  },
+  "homepage": "https://github.com/elgervb/gulp-php",
+  "devDependencies": {
+    "gulp": "3.9.1",
+    "gulp-notify": "2.2.0",
+    "gulp-phpunit": "0.21.4",
+    "lodash": "4.17.4",
+    "yargs": "6.6.0"
+  }
+}
