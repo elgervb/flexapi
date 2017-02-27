@@ -1,4 +1,6 @@
 <?php
+namespace app;
+
 class Application {
 	const DEFAULT_TIMEZONE = 'UTC';
 	
@@ -12,19 +14,26 @@ class Application {
 		return new Application($timezone);
 	}
 	
-	public function addHandler(\handler\IHandler $handler) {
+	public function addHandler(\handler\IHander $handler) {
 		\handler\Handlers::get()->add($handler);
 		
 		return $this;
 	}
 	
 	public function addRoute($path, \Closure $controller, $requestMethod = 'GET') {
-		if (!$this->router) {
-			$this->router = new \router\Router();
-		}
+		$this->getRouter();
+		
 		$this->router->route($path, $controller, $requestMethod);
 		
 		return $this;
+	}
+	
+	public function getRouter() {
+		if (!$this->router) {
+			$this->router = new \router\Router();
+		}
+		
+		return $this->router;
 	}
 	
 	public function start($requestPath = null, $httpMethod = null) {
@@ -35,12 +44,14 @@ class Application {
 			$httpMethod = $_SERVER['REQUEST_METHOD'];
 		}
 		
-		$result = $this->router->match($requestPath, $httpMethod);
+		$result = $this->getRouter()->match($requestPath, $httpMethod);
 		
 		return $this->handleActionResult($result);
 	}
 	
 	private function handleActionResult($result) {
+		
+		$handlers = \handler\Handlers::get();
 		$handler = $handlers->getHandler($result);
 		if ($handler) {
 			try {
@@ -51,7 +62,7 @@ class Application {
 				$handler->handle($error);
 			}
 		} else {
-			$error = new HttpStatus(404, ' ');
+			$error = new \handler\http\HttpStatus(404, ' ');
 			$handler = $handlers->getHandler($error);
 			$handler->handle($error);
 		}
